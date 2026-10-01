@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PaliGemma 2 görsellerle</title>
+<style>
+:root{--bg:#f5f7fa;--ink:#16202e;--mut:#5b6879;--card:#fff;--line:#d5dce6;--a:#1f6fb2;--b:#c2571a;--c:#2b8a5f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f151d;--ink:#e6ebf2;--mut:#93a0b1;--card:#18212c;--line:#2b3746;--a:#5aa7e6;--b:#ee9458;--c:#58c08f}}
+:root[data-theme="dark"]{--bg:#0f151d;--ink:#e6ebf2;--mut:#93a0b1;--card:#18212c;--line:#2b3746;--a:#5aa7e6;--b:#ee9458;--c:#58c08f}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Georgia,"Times New Roman",serif}
+main{max-width:760px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:2rem;line-height:1.2;margin:.2em 0}
+h2{font-size:1.3rem;margin:2.2em 0 .3em}
+p{margin:.4em 0}.mut{color:var(--mut);font-size:.92rem}
+.box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin:12px 0;overflow-x:auto}
+.flow{display:flex;gap:8px;align-items:stretch;min-width:620px}
+.st{flex:1;border:2px solid var(--a);border-radius:8px;padding:8px;font:13px/1.4 system-ui,sans-serif;text-align:center}
+.st b{display:block;font-size:14px}.st.o{border-color:var(--b)}.st.g{border-color:var(--c)}
+.ar{align-self:center;color:var(--mut)}
+.tok{display:inline-block;width:10px;height:14px;margin:1px;border-radius:2px;background:var(--a)}
+.tok.t{background:var(--b)}.tok.y{background:var(--c)}
+button,input,select{font:inherit}
+button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px;padding:6px 10px;cursor:pointer;margin:2px}
+button[aria-pressed=true]{background:var(--a);color:#fff;border-color:var(--a)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--b);outline-offset:2px}
+.bar{height:16px;border-radius:4px;background:var(--a);transition:width .3s}
+.row{display:grid;grid-template-columns:150px 1fr 60px;gap:8px;align-items:center;font:13px system-ui,sans-serif;margin:4px 0}
+.tl{display:flex;min-width:560px;font:13px/1.35 system-ui,sans-serif}
+.tl div{padding:10px;border-top:6px solid var(--a);flex:1;background:var(--bg);margin-right:4px}
+table{border-collapse:collapse;font:13px system-ui,sans-serif;width:100%}
+td,th{padding:5px 6px;text-align:center;border:1px solid var(--bg)}
+code{font:13px ui-monospace,Menlo,monospace;background:var(--bg);padding:1px 4px;border-radius:4px;word-break:break-all}
+canvas{max-width:100%;border:1px solid var(--line);border-radius:6px}
+@media(prefers-reduced-motion:reduce){.bar{transition:none}}
+</style></head><body><main>
+<h1>PaliGemma 2 görsellerle</h1>
+<p class="mut">Makaledeki (Steiner ve ark., Aralık 2024) süreçlerin adım adım çizimleri. Sayılar makaledeki Tablo 1, 13 ve 14 ile Şekil 1 ve 2'den alındı.</p>
+
+<h2>1. Bir resim modelin içinden nasıl geçer?</h2>
+<p>Örnek: 224 piksellik bir görsel ve "describe this image" sorusu.</p>
+<div class="box"><div class="flow">
+<div class="st"><b>Görsel</b>224×224 piksel</div><div class="ar">▶</div>
+<div class="st"><b>SigLIP</b>14×14'lük yamalar, 16×16 = 256 parça</div><div class="ar">▶</div>
+<div class="st"><b>Lineer projeksiyon</b>Gemma'nın anlayacağı boyuta çevirir</div><div class="ar">▶</div>
+<div class="st o"><b>Birleştirme</b>256 görsel + 4 metin token = 260</div><div class="ar">▶</div>
+<div class="st g"><b>Gemma 2</b>cevabı token token yazar</div></div>
+<p style="margin-top:10px" aria-hidden="true"><span id="tk"></span></p>
+<p class="mut"><span class="tok"></span>görsel token <span class="tok t"></span>metin token <span class="tok y"></span>çıktı token. Örnek bir cevap: "A large building with two towers on the water" 11 token tuttu. Şekilde her kutu 16 token'ı temsil ediyor.</p></div>
+
+<h2>2. Çözünürlüğü artırınca ne olur?</h2>
+<div class="box">
+<label>Çözünürlük: <b id="rv">224</b> px <input id="rs" type="range" min="0" max="2" step="1" value="0" aria-label="Çözünürlük"></label><br>
+<canvas id="cv" width="256" height="256"></canvas>
+<p id="rt"></p>
+<div class="row" style="grid-template-columns:110px 1fr 50px"><span>Eğitim maliyeti</span><div><div class="bar" id="cb" style="background:var(--b)"></div></div><span id="cn"></span></div>
+<p class="mut">Maliyet, 3B modelde 224 pikselin maliyeti 1 kabul edilerek verilmiş (Tablo 1). Çözünürlüğü artırmak, dil modelini büyütmek kadar pahalı.</p></div>
+
+<h2>3. Üç aşamalı eğitim</h2>
+<div class="box"><div class="tl">
+<div><b>Aşama 1</b><br>224 px, 1 milyar örnek. Tüm parametreler birlikte eğitilir.</div>
+<div style="border-color:var(--b)"><b>Aşama 2a</b><br>448 px, 50 milyon örnek. Yüksek çözünürlük isteyen görevler ağırlıklandırılır.</div>
+<div style="border-color:var(--b)"><b>Aşama 2b</b><br>896 px, 10 milyon örnek. Çıktı dizisi uzatılır.</div>
+<div style="border-color:var(--c)"><b>Aşama 3</b><br>Hedef göreve ince ayar.</div></div>
+<p class="mut">224 px modeller Aşama 2'yi atlayıp Aşama 1'den ince ayara geçer.</p></div>
+
+<h2>4. Hangi görev neye ihtiyaç duyar?</h2>
+<p>3B, 224 px modelden başlayıp model boyutunu (10B) ya da çözünürlüğü (448 px) artırınca metrikte görülen bağıl iyileşme (Tablo 13).</p>
+<div class="box"><div id="tb"></div><div id="tr"></div>
+<p class="mut">Tek bir tablo değerinden hesaplandı -> 5 çalıştırmanın ortalaması. Doygun görevlerde (örn. NLVR2) yüzdeler küçük kalır.</p></div>
+
+<h2>5. Model büyüdükçe en iyi öğrenme oranı küçülür</h2>
+<div class="box"><div id="lr"></div>
+<p class="mut">Koyu hücre o satırdaki en iyi skor, çerçeveli hücre en iyisi. Tablo 14'ten iki görev. Eğilim genel ama kesin değil: AI2D'de 28B'nin en iyisi 10B'den biraz daha büyük bir öğrenme oranında.</p></div>
+
+<h2>6. Konum token'ları kutuya dönüşür</h2>
+<div class="box"><p>Kaydırıcılar 0 ile 1023 arasında. Model kutuyu <code>y_min, x_min, y_max, x_max</code> sırasıyla dört token ile yazar. Başlangıç değerleri Şekil 2'deki "puffin in front" kutusu.</p>
+<div id="lc"></div><canvas id="lv" width="240" height="240"></canvas>
+<p><code id="lt"></code></p></div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const cs=getComputedStyle(document.documentElement);
+function col(n){return cs.getPropertyValue(n).trim()||'#1f6fb2'}
+// 1
+let h='';for(let i=0;i<16;i++)h+='<span class="tok"></span>';h+=' + ';for(let i=0;i<1;i++)h+='<span class="tok t"></span>';h+=' → ';for(let i=0;i<1;i++)h+='<span class="tok y"></span>';$('tk').innerHTML=h;
+// 2
+const R=[224,448,896],N=[16,32,64],T=[256,1024,4096],C=[1,4.6,23.5];
+function res(){const v=+$('rs').value,n=N[v],c=$('cv').getContext('2d');c.clearRect(0,0,256,256);c.strokeStyle=cs.getPropertyValue('--a')||'#1f6fb2';c.lineWidth=.6;c.fillStyle=getComputedStyle(document.body).backgroundColor;c.fillRect(0,0,256,256);
+const s=256/n;for(let i=0;i<=n;i++){c.beginPath();c.moveTo(i*s,0);c.lineTo(i*s,256);c.moveTo(0,i*s);c.lineTo(256,i*s);c.stroke()}
+$('rv').textContent=R[v];$('rt').innerHTML=`${n}×${n} yama = <b>${T[v]}</b> görsel token`;$('cb').style.width=(C[v]/23.5*100)+'%';$('cn').textContent=C[v]+'×'}
+$('rs').oninput=res;res();
+// 4
+const D=[['DocVQA',39.9,43.9,73.6],['TextVQA',59.6,64.0,75.2],['InfoVQA',25.2,33.6,37.5],['ChartQA (human)',42.0,48.4,54.0],['AI2D',74.7,83.1,76.0],['OKVQA',64.2,68.0,64.1],['NLVR2',91.4,93.9,91.6],['CountBenchQA',81.0,84.0,82.0],['XM3600 (çok dilli)',42.8,44.5,43.2]];
+function task(i){const d=D[i],m=(d[2]/d[1]-1)*100,r=(d[3]/d[1]-1)*100;
+[...$('tb').children].forEach((b,j)=>b.setAttribute('aria-pressed',j==i));
+const mx=Math.max(Math.abs(m),Math.abs(r),1);
+$('tr').innerHTML=`<div class="row"><span>Model 3B→10B</span><div><div class="bar" style="width:${Math.max(m,0)/90*100}%"></div></div><span>${m>0?'+':''}${m.toFixed(1)}%</span></div><div class="row"><span>Çözünürlük 224→448</span><div><div class="bar" style="width:${Math.max(r,0)/90*100}%;background:var(--b)"></div></div><span>${r>0?'+':''}${r.toFixed(1)}%</span></div><p>${Math.abs(r)>Math.abs(m)*1.5?'Bu görev çözünürlükten daha çok fayda görüyor.':Math.abs(m)>Math.abs(r)*1.5?'Bu görev model boyutundan daha çok fayda görüyor.':'İkisinden de benzer ölçüde fayda görüyor.'}</p>`}
+D.forEach((d,i)=>{const b=document.createElement('button');b.textContent=d[0];b.onclick=()=>task(i);$('tb').appendChild(b)});task(0);
+// 5
+const L=['3e-7','6e-7','1e-6','3e-6','6e-6','1e-5','3e-5'];
+const Q={'AI2D':{'3B':[61.8,67.6,70.6,75.0,76.9,75.1,68.8],'10B':[80.0,82.9,85.3,84.4,82.9,82.1,69.2],'28B':[81.9,82.3,83.2,85.9,85.0,83.4,75.7]},'COCO-35L (en)':{'3B':[137.9,138.6,139.1,138.4,137.6,136.5,133.8],'10B':[140.6,140.3,139.6,137.3,135.5,133.8,132.5],'28B':[142.5,141.3,140.4,137.7,134.5,133.2,129.9]}};
+let t='<table><tr><th></th><th></th>'+L.map(x=>`<th>${x}</th>`).join('')+'</tr>';
+for(const k in Q){let f=1;for(const m in Q[k]){const v=Q[k][m],mx=Math.max(...v),mn=Math.min(...v);t+=`<tr>${f?`<th rowspan="3">${k}</th>`:''}<th>${m}</th>`+v.map(x=>{const a=(x-mn)/(mx-mn);return `<td style="background:color-mix(in srgb,var(--c) ${Math.round(a*85+5)}%,var(--card));color:${a>.55?'#fff':'var(--ink)'};${x==mx?'outline:2px solid var(--b);outline-offset:-2px;font-weight:700':''}">${x}</td>`}).join('')+'</tr>';f=0}}
+$('lr').innerHTML=t+'</table>';
+// 6
+const V=[255,274,846,498],NM=['y_min','x_min','y_max','x_max'];
+NM.forEach((n,i)=>{$('lc').insertAdjacentHTML('beforeend',`<label>${n} <input type="range" min="0" max="1023" value="${V[i]}" data-i="${i}" aria-label="${n}"></label> `)});
+function loc(){const c=$('lv').getContext('2d');c.fillStyle=getComputedStyle(document.body).backgroundColor;c.fillRect(0,0,240,240);c.strokeStyle=cs.getPropertyValue('--b')||'#c2571a';c.lineWidth=3;const k=240/1024;c.strokeRect(V[1]*k,V[0]*k,(V[3]-V[1])*k,(V[2]-V[0])*k);
+$('lt').textContent=V.map(v=>'<loc'+String(v).padStart(4,'0')+'>').join('')}
+$('lc').oninput=e=>{V[+e.target.dataset.i]=+e.target.value;loc()};loc();
+matchMedia('(prefers-color-scheme:dark)').onchange=()=>{res();loc()};
+</script></body></html>
