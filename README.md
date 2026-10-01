@@ -50,6 +50,7 @@ Bu repo Google DeepMind tarafından yayımlanan **PaliGemma 2** (*A Versatile Fa
 ---
 
 ## Kaynakça
-1. Steiner, A., et al. (2024). PaliGemma 2: A Versatile Family of Vision-Language Models for Transfer. arXiv preprint arXiv:2412.03555.
 
-2. Hugging Face Transformers: google/paligemma2-3b-mix-224.
+1. Steiner, A., et al. (2024). *PaliGemma 2: A Versatile Family of Vision-Language Models for Transfer*. arXiv preprint [arXiv:2412.03555](https://arxiv.org/abs/2412.03555).
+
+2. Hugging Face Model Kartı: [`google/paligemma2-3b-mix-224`](https://huggingface.co/google/paligemma2-3b-mix-224).
