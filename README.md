@@ -39,6 +39,15 @@ Bu repo Google DeepMind tarafından yayımlanan **PaliGemma 2** (*A Versatile Fa
 
 ---
 
+## Mimari Analiz, İnteraktif Görselleştirme ve Deneysel Çıkarım
+
+[![Live Demo](https://img.shields.io/badge/Demo-Canlı%20Simülasyon-brightgreen?style=for-the-badge&logo=github)](https://sevval12345.github.io/paligemma2-analysis-and-experiments/)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Sevval12345/paligemma2-analysis-and-experiments/blob/main/paligemma2_3b_mix_224.ipynb)
+
+> 🌐 **İnteraktif Web Uygulaması:** [sevval12345.github.io/paligemma2-analysis-and-experiments](https://sevval12345.github.io/paligemma2-analysis-and-experiments/)
+> 
+---
+
 ## Repo Yapısı
 ```
 ├── paligemma2_3b_mix_224.ipynb  # Colab ortamında yürütülen çıkarım defteri
