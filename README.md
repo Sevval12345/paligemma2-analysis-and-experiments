@@ -22,15 +22,20 @@ Bu repo Google DeepMind tarafından yayımlanan **PaliGemma 2** (*A Versatile Fa
 
 ## Deneysel Bulgular Özeti
 
-| Görsel | Görev / İstem | Çıktı Durumu | Gözlem |
+| Görsel | Görev / Prompt | Çıktı Durumu | Model Çıktısı & Gözlem |
 | :--- | :--- | :---: | :--- |
-| **Sokak Panosu** (`aci.jpg`) | `ocr` | Başarılı | "BURSLULUK SINAVI", "12 OCAK" gibi büyük fontlar eksiksiz okundu; sonuna eğitim verisi kaynaklı eklemeler yapıldı. |
-| **Sokak Panosu** (`aci.jpg`) | `caption tr` | Başarılı | Komut Türkçe olmasına rağmen açıklama İngilizce üretildi; semantik sahne doğruluğu tam. |
-| **Sokak Panosu** (`aci.jpg`) | `answer tr ...` | Kısmen Başarılı | 224px kısıtı nedeniyle küçük puntolu alt sınıf aralıklarında tahmine dayalı yanıt verildi. |
-| **Yol Tabelası** (`yol-tabelasi.png`) | `ocr` | Başarılı | "Çatalkaya", "Havalimanı", "Kayseri", "İstanbul" gibi Türkçe karakterli yer adları hatasız tanındı. |
-| **Yol Tabelası** (`yol-tabelasi.png`) | `detect road sign` | Başarılı | Levhalar `<loc0212><loc0717><loc0485><loc0880>` normalize koordinatlarıyla doğru kutulandı. |
-| **Market Fişi** (`fis.jpg`) | `ocr` | Başarısız | "SOK. MARKETLER" başlığı tanındı; alt satırlardaki ürün ve adres harflerinde çözünürlük kaybı nedeniyle bozulmalar oldu. |
-| **Market Fişi** (`fis.jpg`) | `answer tr (tutar)` | Başarısız | 427,42 TL olan genel toplam yerine hemen üstteki 46,60 TL KDV tutarı okundu (dikey satır ayrımı yapılamadı). |
+| **Sokak Panosu** (`aci.jpg`) | `prompt = "ocr"` | Başarılı | `BURSLULUK SINAVI 12 OCAK 2022...`<br>Pano üzerindeki büyük puntolu başlıkları eksiksiz yakaladı; sonuna ön eğitim kaynaklı saat ve yıl ekledi. |
+| **Sokak Panosu** (`aci.jpg`) | `prompt = "caption tr"` | Başarılı | `a billboard with the words "bursluluk sinavi" on it.`<br>İstem Türkçe olmasına karşın açıklama İngilizce üretildi; görsel semantiği tam doğru kavradı. |
+| **Sokak Panosu** (`aci.jpg`) | `prompt = "answer tr sınav hangi tarihte yapılacak?"` | Kısmen Başarılı | `14.05.2015`<br>224px çözünürlük kısıtı sebebiyle küçük tarih yazısını tam seçemeyip tahmini bir tarih üretti. |
+| **Sokak Panosu** (`aci.jpg`) | `prompt = "answer tr hangi sınıflar için sınav var?"` | Kısmen Başarılı | `12, 11 ve 10`<br>Panodaki tüm sınıf listesi yerine genel lise düzeylerini tahmin etti. |
+| **Yol Tabelası** (`yol-tabelasi.png`) | `prompt = "ocr"` | Başarılı | `Çatalkaya Havalimanı Kayseri Edirne İstanbul...`<br>Türkçe özel karakterler (`Ç`, `ı`) ve şehir adları eksiksiz tanındı; yön levhalarına göre tekrarlar oluştu. |
+| **Yol Tabelası** (`yol-tabelasi.png`) | `prompt = "caption tr"` | Başarılı | `In the image we can see there are vehicles on the road. This is a sign board, light pole, trees...`<br>Açıklama İngilizce geldi; araçlar, tabela, aydınlatma direği ve çimler gibi sahne elemanlarını doğru ayrıştırdı. |
+| **Yol Tabelası** (`yol-tabelasi.png`) | `prompt = "answer tr tabela nereyi veya hangi yönü gösteriyor?"` | Başarılı | `tablo, doğrudan ve sağa dönük bir şehirye yön veriyor.`<br>Tabelanın geometrik yön oklarını (düz ve sağa) doğru anlayıp Türkçe yanıtladı. |
+| **Yol Tabelası** (`yol-tabelasi.png`) | `prompt = "detect road sign"` | Başarılı | `<loc0212><loc0717><loc0485><loc0880> road sign ; ...`<br>Model pix2seq 0–1023 normalize konum belirteçlerini kullanarak tabelaları kutu içine aldı. |
+| **Market Fişi** (`fis.jpg`) | `prompt = "ocr"` | Başarısız | `SOK. MARKETLER TICA.S MARKEZ GARCE ÖZDEHİR...`<br>En üstteki büyük puntolu market adını yakaladı; alt satırlardaki ürün ve adres harflerinde pikseller dağıldı. |
+| **Market Fişi** (`fis.jpg`) | `prompt = "answer tr marketin adı nedir?"` | Kısmen Başarılı | `söz marketler ticaret`<br>Market adındaki harf yapısını kavradı ancak görsel çözünürlük kaybından dolayı `Şok` yerine `söz` üretti. |
+| **Market Fişi** (`fis.jpg`) | `prompt = "answer tr fişin tarihi nedir?"` | Kısmen Başarılı | `01/02/2014`<br>Gün ve ay bilgisini (01/02) doğru okudu; mikro puntodan ötürü 2024 yılını 2014 olarak ayrıştırdı. |
+| **Market Fişi** (`fis.jpg`) | `prompt = "answer tr toplam tutar ne kadar?"` | Başarısız | `46.60`<br>Gerçek genel toplam yerine hemen üst satırdaki KDV tutarını okudu; 224px kısıtının dikey satır ayrımını imkansız kıldığını kanıtladı. |
 
 ---
 
