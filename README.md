@@ -37,9 +37,7 @@ Bu repo Google DeepMind tarafından yayımlanan **PaliGemma 2** (*A Versatile Fa
 ## Repo Yapısı
 
 ├── paligemma2_3b_mix_224.ipynb  # Colab ortamında yürütülen çıkarım defteri
-
 ├── aci.jpg                      # Makro metin test görseli
-
 ├── fis.jpg                      # Mikro metin / fiş test görseli
 ├── yol-tabelasi.png             # Yol yön levhası ve nesne tespiti görseli
 └── README.md                    # Proje dokümantasyonu
