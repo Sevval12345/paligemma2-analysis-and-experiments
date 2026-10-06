@@ -22,6 +22,8 @@ Bu repo Google DeepMind tarafından yayımlanan **PaliGemma 2** (*A Versatile Fa
 
 ## Deneysel Bulgular Özeti
 
+### 1. `paligemma2-3b-mix-224` Çıktıları ve Gözlemler
+
 | Görsel | Görev / Prompt | Çıktı Durumu | Model Çıktısı & Gözlem |
 | :--- | :--- | :---: | :--- |
 | **Sokak Panosu** (`aci.jpg`) | `prompt = "ocr"` | Başarılı | `BURSLULUK SINAVI 12 OCAK 2022...`<br>Pano üzerindeki büyük puntolu başlıkları eksiksiz yakaladı; sonuna ön eğitim kaynaklı saat ve yıl ekledi. |
@@ -36,6 +38,23 @@ Bu repo Google DeepMind tarafından yayımlanan **PaliGemma 2** (*A Versatile Fa
 | **Market Fişi** (`fis.jpg`) | `prompt = "answer tr marketin adı nedir?"` | Kısmen Başarılı | `söz marketler ticaret`<br>Market adındaki harf yapısını kavradı ancak görsel çözünürlük kaybından dolayı `Şok` yerine `söz` üretti. |
 | **Market Fişi** (`fis.jpg`) | `prompt = "answer tr fişin tarihi nedir?"` | Kısmen Başarılı | `01/02/2014`<br>Gün ve ay bilgisini (01/02) doğru okudu; mikro puntodan ötürü 2024 yılını 2014 olarak ayrıştırdı. |
 | **Market Fişi** (`fis.jpg`) | `prompt = "answer tr toplam tutar ne kadar?"` | Başarısız | `46.60`<br>Gerçek genel toplam yerine hemen üst satırdaki KDV tutarını okudu; 224px kısıtının dikey satır ayrımını imkansız kıldığını kanıtladı. |
+
+### 2. `paligemma2-3b-mix-448` Çıktıları ve Karşılaştırmalı Gözlemler
+
+| Görsel | Görev / Prompt | Çıktı Durumu | Model Çıktısı & Gözlem |
+| :--- | :--- | :---: | :--- |
+| **Sokak Panosu** (`aci.jpg`) | `prompt = "ocr"` | Başarılı | `BURSLULUK 2019 New'll Feel Ap't's Difference BURSLULUK New'll Feel Ap't's Difference 12 SINAVI 12 SINAVI OCAK OCAK Cumartesi Cumartesi 3-4-...`<br>Çözünürlük artışıyla afişteki ikincil ve küçük metin blokları da okundu; tekrarlı yapılar görüldü. |
+| **Sokak Panosu** (`aci.jpg`) | `prompt = "caption tr"` | Başarılı | `a billboard with the words "bursluluk sinavi" on it.`<br>İstem Türkçe olmasına karşın model 448px'de de açıklamayı İngilizce üreterek dil kaymasını (language drift) sürdürdü. |
+| **Sokak Panosu** (`aci.jpg`) | `prompt = "answer tr sınav hangi tarihte yapılacak?"` | Başarılı | `12 ocak`<br>224px modelindeki uydurma tarih (halüsinasyon) ortadan kalktı; 1024 yama sayesinde panodaki gerçek sınav tarihi eksiksiz okundu. |
+| **Sokak Panosu** (`aci.jpg`) | `prompt = "answer tr hangi sınıflar için sınav var?"` | Kısmen Başarılı | `12`<br>Tarihte geçen `12 OCAK` ifadesi sınıf seviyesiyle karıştı; görsel-metin akıl yürütmesinde bağlamsal kısıt sergiledi. |
+| **Yol Tabelası** (`yol-tabelasi.png`) | `prompt = "ocr"` | Başarılı | `Catalca İstanbul Havaalanı Çerkezköy Silivri Selimpasa Corlu Atatürk Havaalanı Yavuz Sultan Selim Köprüsü İstanbul Edirne İstanbul`<br>Tüm yön levhaları, havalimanı ve köprü isimleri doğru hiyerarşiyle ve eksiksiz metne döküldü. |
+| **Yol Tabelası** (`yol-tabelasi.png`) | `prompt = "caption tr"` | Başarılı | `Aşağıda bir tabelanın altında bir otoyolda giden bir grup araba.`<br>`caption tr` istemine bu görselde doğrudan ve doğal bir Türkçe cümleyle doğru yanıt verdi. |
+| **Yol Tabelası** (`yol-tabelasi.png`) | `prompt = "answer tr tabela nereyi veya hangi yönü gösteriyor?"` | Başarılı | `istanbul`<br>Levhadaki ana varış noktasını doğrudan ve doğru bir şekilde tespit etti. |
+| **Yol Tabelası** (`yol-tabelasi.png`) | `prompt = "detect road sign"` | Başarılı | `<loc0204><loc0366><loc0469><loc0558> road sign ; <loc0204><loc0162><loc0459><loc0357> road sign ; <loc0215><loc0710><loc0477><loc0879> road sign ; <loc0558><loc0551><loc0648><loc0692> road sign`<br>Görseldeki 4 farklı tabelayı ayrı ayrı algılayıp koordinatlarını tam olarak sınırlayıcı kutulara (bounding box) dönüştürdü. |
+| **Market Fişi** (`fis.jpg`) | `prompt = "ocr"` | Başarılı | `SOK MARKETLER TİC.A.S 13462 MAMAK CANZE ÖZDEMİR ŞAHINTEPE NH 637.5K NO 2 MAMAK ANKARA 8140131899 ANADOLU KUR...`<br>224px'de dağılan küçük adres ve şube harfleri satır satır ve yüksek doğrulukla okundu (token limiti nedeniyle sonda durdu). |
+| **Market Fişi** (`fis.jpg`) | `prompt = "answer tr marketin adı nedir?"` | Başarılı | `sok marketler tic.a.s`<br>224px'deki `söz` hatası düzeldi; ticari unvan eksiksiz okundu. |
+| **Market Fişi** (`fis.jpg`) | `prompt = "answer tr fişin tarihi nedir?"` | Başarılı | `01/02/2024`<br>Yıl hanesindeki piksel netleştiği için 2014 hatası ortadan kalktı ve gerçek tarih olan 2024 eksiksiz okundu. |
+| **Market Fişi** (`fis.jpg`) | `prompt = "answer tr toplam tutar ne kadar?"` | Başarılı | `427.42`<br>224px'deki KDV satırına kayma sorunu çözüldü; model fişin en altındaki gerçek dip toplam tutarını kuruşu kuruşuna tespit etti. |
 
 ---
 
