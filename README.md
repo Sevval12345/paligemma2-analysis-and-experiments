@@ -57,11 +57,11 @@ Bu repo Google DeepMind tarafından yayımlanan **PaliGemma 2** (*A Versatile Fa
 | **Market Fişi** (`fis.jpg`) | `prompt = "answer tr toplam tutar ne kadar?"` | Başarılı | `427.42`<br>224px'deki KDV satırına kayma sorunu çözüldü; model fişin en altındaki gerçek dip toplam tutarını kuruşu kuruşuna tespit etti. |
 
 ---
-### 📐 En-Boy Oranı ve Ön İşleme Deneyi: Kareye Sıkıştırma (Squash) vs. Beyaz Dolgu (Padding)
+### En-Boy Oranı ve Ön İşleme Deneyi: Kareye Sıkıştırma (Squash) vs. Beyaz Dolgu (Padding)
 
 Dikey ve dar market fişi (`fis.jpg`), `mix-448` modeline iki farklı ön işleme yöntemiyle verilerek en-boy oranı hassasiyeti test edildi:
 
-| Ön İşleme Yöntemi | Görsel Durumu | İstem (Prompt) | Model Çıktısı | Gözlem / Mühendislik Çıkarımı |
+| Ön İşleme Yöntemi | Görsel Durumu | İstem (Prompt) | Model Çıktısı | Gözlem ve Çıkarım |
 | :--- | :--- | :--- | :--- | :--- |
 | **Kareye Sıkıştırma (Squash)** | En-boy oranı bozuldu; harfler yatayda basıklaştırılıp uzatıldı. | `"answer tr toplam tutar ne kadar?"` | `427.42` | **Geometrik Dayanıklılık:** 448px'deki 1024 yama, basıklaşan font deformasyonunu tolere edebilecek kadar yüksek temsil kapasitesi sundu. |
 | **Beyaz Dolgu (Letterbox Padding)** | Orijinal oran korundu; sağ ve soldaki boşluklar beyaz piksellerle dolduruldu. | `"answer tr toplam tutar ne kadar?"` | `427.42` | **Kaynak İsrafı:** Karakter yapısı doğal kaldı ve sonuç doğru çıktı; ancak 1024 yamanın yaklaşık yarısı anlamsız beyaz arka planı işlemeye harcandı. |
