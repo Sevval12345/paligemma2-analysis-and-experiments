@@ -1,6 +1,6 @@
 # PaliGemma 2: Mimari Analiz, İnteraktif Görselleştirme ve Deneysel Çıkarım
 
-Bu repo Google DeepMind tarafından yayımlanan **PaliGemma 2** (*A Versatile Family of Vision-Language Models for Transfer*) çalışmasının teknik analizini, modelin iç mekanizmasını açıklayan interaktif bir web görselleştirmesini ve Google Colab üzerinde gerçekleştirilen yerel çıkarım (inference) deneylerini içermektedir.
+Bu repo Google DeepMind tarafından yayımlanan **PaliGemma 2** (*A Versatile Family of Vision-Language Models for Transfer*) çalışmasının teknik analizini, modelin iç mekanizmasını açıklayan interaktif bir web görselleştirmesini ve Google Colab üzerinde gerçekleştirilen yerel çıkarım deneylerini içermektedir.
 
 ## İnteraktif Görselleştirme
 
