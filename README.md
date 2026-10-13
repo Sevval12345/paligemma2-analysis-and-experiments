@@ -82,7 +82,7 @@ Bu tek denemelik tablo, belge/OCR görevlerinde yüksek çözünürlüğün yard
 
 | Ön işleme | Model | Prompt | Çıktı |
 | :--- | :--- | :--- | :--- |
-| Varsayılan yeniden boyutlandırma (squash) [DOĞRULA: elle mi yapıldı, processor mu] | `mix-448` | `answer tr toplam tutar ne kadar?` | `427.42` |
+| Varsayılan yeniden boyutlandırma (squash) | `mix-448` | `answer tr toplam tutar ne kadar?` | `427.42` |
 | Beyaz dolgu (padding) | `mix-448` | `answer tr toplam tutar ne kadar?` | `427.42` |
 
 Her iki yöntemde de cevap doğrudur. Padding'de görüntü alanının bir kısmı (fiş 3:4 ise yaklaşık dörtte biri) boş piksellerden oluşur. Tek örnekle bu iki yöntemin başarı farkı hakkında sonuç çıkarılamaz.
@@ -101,4 +101,6 @@ Her iki yöntemde de cevap doğrudur. Padding'de görüntü alanının bir kısm
 
 1. Steiner, A., et al. (2024). *PaliGemma 2: A Versatile Family of Vision-Language Models for Transfer*. arXiv preprint [arXiv:2412.03555](https://arxiv.org/abs/2412.03555).
 
-2. Hugging Face Model Kartı: [`google/paligemma2-3b-mix-224`](https://huggingface.co/google/paligemma2-3b-mix-224).
+2. Hugging Face Model Kartı (mix-224): [`google/paligemma2-3b-mix-224`](https://huggingface.co/google/paligemma2-3b-mix-224).
+
+3. Hugging Face Model Kartı (mix-448): [`google/paligemma2-3b-mix-224`](https://huggingface.co/google/paligemma2-3b-mix-448)
